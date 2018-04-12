@@ -37,7 +37,11 @@
 			return (
 				<div>
 					<h1>{props.listName}</h1>
-					<FriendsList friends={props.friends} onRemoveFriend={props.onRemoveFriend} buttons={props.buttons} />
+					<FriendsList
+						friends={props.friends}
+						onRemoveFriend={props.onRemoveFriend}
+						buttons={props.buttons}
+					/>
 				</div>
 			)
 		}
@@ -103,8 +107,9 @@
 							onClick={this.handleButtonClick}>
 							Submit
 						</button>
-						<FriendsList 
+						<NamedFriendsList 
 							friends={this.state.friends}
+							listName="New List"
 							onRemoveFriend={this.handleRemoveFriend}
 							buttons={[RemoveButton]}
 						 />
