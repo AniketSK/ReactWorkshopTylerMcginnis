@@ -19,7 +19,7 @@
 						friend => (
 							<li key={friend}>
 								<span>{friend}</span>
-								<button onClick={ () => props.onRemoveFriend(friend)}>Remove</button>
+								{props.buttons(props, friend)}
 							</li>
 							)
 					)}
@@ -27,6 +27,11 @@
 			)
 		}
 
+		function RemoveButton(props, friend) {
+			return (
+				<button onClick={ () => props.onRemoveFriend(friend)}>Remove</button>
+			)
+		}
 		class App extends React.Component {
 			constructor(props) {
 				super(props)
@@ -91,6 +96,7 @@
 						<FriendsList 
 							friends={this.state.friends}
 							onRemoveFriend={this.handleRemoveFriend}
+							buttons={RemoveButton}
 						 />
 					</div>
 				)
