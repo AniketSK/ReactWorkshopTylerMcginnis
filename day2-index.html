@@ -32,6 +32,16 @@
 				<button onClick={ () => props.onRemoveFriend(friend)}>Remove</button>
 			)
 		}
+
+		function NamedFriendsList(props) {
+			return (
+				<div>
+					<h1>{props.listName}</h1>
+					<FriendsList friends={props.friends} buttons={props.buttons} />
+				</div>
+			)
+		}
+
 		class App extends React.Component {
 			constructor(props) {
 				super(props)
