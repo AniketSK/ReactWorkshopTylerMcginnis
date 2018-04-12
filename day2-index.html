@@ -19,7 +19,7 @@
 						friend => (
 							<li key={friend}>
 								<span>{friend}</span>
-								{props.buttons(props, friend)}
+								{props.buttons.map( b => b(props, friend) ) }
 							</li>
 							)
 					)}
@@ -106,7 +106,7 @@
 						<FriendsList 
 							friends={this.state.friends}
 							onRemoveFriend={this.handleRemoveFriend}
-							buttons={RemoveButton}
+							buttons={[RemoveButton]}
 						 />
 					</div>
 				)
