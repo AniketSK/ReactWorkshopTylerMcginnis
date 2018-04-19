@@ -52,18 +52,23 @@
 		}		
 
 		function NamedFriendsList(props) {
-			return (
-				<div >
-					<h1>{props.listName}</h1>
-					<FriendsList
-						friends={props.friends}
-						onRemoveFriend={props.onRemoveFriend}
-						onDeactivateFriend={props.onDeactivateFriend}
-						onActivateFriend={props.onActivateFriend}
-						buttons={props.buttons}
-					/>
-				</div>
-			)
+			if (props.friends.length > 0 ) {
+				return (
+					<div >
+						<h1>{props.listName}</h1>
+						<FriendsList
+							friends={props.friends}
+							onRemoveFriend={props.onRemoveFriend}
+							onDeactivateFriend={props.onDeactivateFriend}
+							onActivateFriend={props.onActivateFriend}
+							buttons={props.buttons}
+						/>
+					</div>
+				)
+			}
+			else {
+				return (<div/>)
+			}
 		}
 
 		class App extends React.Component {
