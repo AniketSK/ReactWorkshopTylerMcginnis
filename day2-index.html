@@ -33,13 +33,33 @@
 			)
 		}
 
+		function ActivateButton(props) {
+			return (
+				<button onClick={() => props} />
+			)
+		}
+
+		function DeactivateButton(props, friend) {
+			return (
+				<button onClick={ () => props.onDeactivateFriend(friend)}>Deactivate</button>
+			)
+		}
+
+		function ActivateButton(props, friend) {
+			return (
+				<button onClick={ () => props.onActivateFriend(friend)}>Activate</button>
+			)
+		}		
+
 		function NamedFriendsList(props) {
 			return (
-				<div>
+				<div >
 					<h1>{props.listName}</h1>
 					<FriendsList
 						friends={props.friends}
 						onRemoveFriend={props.onRemoveFriend}
+						onDeactivateFriend={props.onDeactivateFriend}
+						onActivateFriend={props.onActivateFriend}
 						buttons={props.buttons}
 					/>
 				</div>
@@ -50,20 +70,23 @@
 			constructor(props) {
 				super(props)
 				this.state = {
-					friends : ['JOrdyn', 'Mikenzi', 'Michelle'],
+					activeFriends : ['JOrdyn', 'Mikenzi', 'Michelle'],
+					deactivatedFriends: [],
 					input:''
 				}
 				this.handleRemoveFriend = this.handleRemoveFriend.bind(this)
 				this.updateInput = this.updateInput.bind(this)
 				this.handleAddFriend = this.handleAddFriend.bind(this)
 				this.handleButtonClick = this.handleButtonClick.bind(this)
+				this.handleDeactivateFriend = this.handleDeactivateFriend.bind(this)
+				this.handleActivateFriend = this.handleActivateFriend.bind(this)
 			}
 
 			handleAddFriend(name) {
 				this.setState(
 					currentState => {
 						return {
-							friends : currentState.friends.concat([name]),
+							activeFriends : currentState.activeFriends.concat([name]),
 							input: ''
 						}
 					}
@@ -74,7 +97,29 @@
 				this.setState(
 					currentState => {
 						return {
-							friends: currentState.friends.filter( curName => curName != name)
+							activeFriends: currentState.activeFriends.filter( curName => curName != name),
+							deactivatedFriends: currentState.deactivatedFriends.filter( curName => curName != name)
+						}
+					}
+				)
+			}
+
+			handleActivateFriend(name) {
+				this.setState( currentState => {
+					return {
+						deactivatedFriends: currentState.deactivatedFriends.filter( curName => curName != name),
+						activeFriends: currentState.activeFriends.concat([name])
+					}
+				})
+			}
+
+			handleDeactivateFriend(name) {
+				this.setState(
+					currentState => {
+						console.log("Deactivated")
+						return {
+							activeFriends: currentState.activeFriends.filter( curName => curName != name),
+							deactivatedFriends: currentState.deactivatedFriends.concat([name])
 						}
 					}
 				)
@@ -108,11 +153,19 @@
 							Submit
 						</button>
 						<NamedFriendsList 
-							friends={this.state.friends}
-							listName="New List"
+							friends={this.state.activeFriends}
+							listName="Active Friends"
 							onRemoveFriend={this.handleRemoveFriend}
-							buttons={[RemoveButton]}
+							onDeactivateFriend={this.handleDeactivateFriend}
+							buttons={[RemoveButton, DeactivateButton]}
 						 />
+						 <NamedFriendsList 
+							friends={this.state.deactivatedFriends}
+							listName="Deactivated Friends"
+							onActivateFriend={this.handleActivateFriend}
+							buttons={[ActivateButton]}
+						 />
+
 					</div>
 				)
 			}
