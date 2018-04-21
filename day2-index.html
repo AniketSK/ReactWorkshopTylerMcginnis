@@ -10,6 +10,18 @@
 </head>
 <body>
 	<div id='app'>Not rendered</div>
+	<script>
+		window.API = {
+			fetchFriends() {
+				return new Promise((res, rej) => {
+					const friends = ['JOrdyn', 'Mikenzi', 'Michelle',]
+					setTimeout(() => res(friends), 10000)
+
+					
+				})
+			}
+		}
+	</script>
 	<script type="text/babel">
 
 		function FriendsList (props) {
@@ -51,6 +63,48 @@
 			)
 		}		
 
+		class LoadingScreen extends React.Component {
+			constructor(props) {
+				super(props)
+				this.state = {
+					loadState: 0
+				}
+			}
+
+			beginCountDown() {
+				this.interval = setInterval(() => {
+					console.log("Set state ran")
+					this.setState((currentState) => {
+						return {
+							loadState: currentState.loadState + 1
+						}
+					})
+				}, 500)
+			}
+
+			componentWillUnmount() {
+				console.log(this.interval)
+				window.clearInterval(this.interval)
+			}
+
+			componentDidMount() {
+				this.beginCountDown()
+			}
+
+			render() {
+				console.log(this.state.loadState)
+				let dots = ""
+				for(let i = 0; i < (this.state.loadState % 4); i++) {
+					dots+="."
+				}
+				let info = "hi"
+
+				return ( 
+					<h1>Loading{info}{dots}</h1> 
+				)
+			}
+		}
+
 		function NamedFriendsList(props) {
 			if (props.friends.length > 0 ) {
 				return (
@@ -75,9 +129,10 @@
 			constructor(props) {
 				super(props)
 				this.state = {
-					activeFriends : ['JOrdyn', 'Mikenzi', 'Michelle'],
+					activeFriends : [],//friends here
 					deactivatedFriends: [],
-					input:''
+					input:'',
+					loading : true
 				}
 				this.handleRemoveFriend = this.handleRemoveFriend.bind(this)
 				this.updateInput = this.updateInput.bind(this)
@@ -85,6 +140,28 @@
 				this.handleButtonClick = this.handleButtonClick.bind(this)
 				this.handleDeactivateFriend = this.handleDeactivateFriend.bind(this)
 				this.handleActivateFriend = this.handleActivateFriend.bind(this)
+			}
+
+			componentDidMount() {
+				console.log("--- componentDidMount --")
+				API.fetchFriends().
+					then((friends) => {
+						this.setState({
+							activeFriends: friends,
+							loading: false
+								}
+							)
+					})
+			}
+
+			componentDidUpdate() {
+				console.log("-- component did update was called --")
+			}
+
+			componentWillUnmount() {
+				// Called when component will be removed from the dom.
+				// Such as when you change routes.
+				console.log("-- component will unmount --")
 			}
 
 			handleAddFriend(name) {
@@ -145,6 +222,15 @@
 			}
 
 			render() {
+
+				if (this.state.loading === true) { 
+					return (
+							<LoadingScreen/>
+						)
+				}
+
+				console.log("Oh proceeded: ", this.state.loading)
+
 				return (
 					<div>
 						<input
@@ -163,14 +249,13 @@
 							onRemoveFriend={this.handleRemoveFriend}
 							onDeactivateFriend={this.handleDeactivateFriend}
 							buttons={[RemoveButton, DeactivateButton]}
-						 />
-						 <NamedFriendsList 
+						/>
+						<NamedFriendsList 
 							friends={this.state.deactivatedFriends}
 							listName="Deactivated Friends"
 							onActivateFriend={this.handleActivateFriend}
 							buttons={[ActivateButton]}
-						 />
-
+						/>
 					</div>
 				)
 			}
